@@ -1,9 +1,10 @@
-FROM centos:7 as builder
+FROM centos:centos8.1.1911 as builder
 
 ARG NINJA_VERSION=1.10.0
 
 # install build dependencies
-RUN yum -y install gcc-c++ make
+RUN yum -y install gcc-c++ make python2
+RUN alternatives --set python /usr/bin/python2
 
 # build Python from source
 RUN pushd /home && \
@@ -13,5 +14,5 @@ RUN pushd /home && \
     pushd build && \
     ../ninja-${NINJA_VERSION}/configure.py --bootstrap
 
-FROM centos:7
+FROM centos:centos8.1.1911
 COPY --from=builder /home/build/ninja /usr/local/bin/
